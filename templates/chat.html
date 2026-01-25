@@ -1,0 +1,173 @@
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--<head>-->
+<!--    <title>Send Mail</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <h2>Send Email</h2>-->
+
+<!--    <form action="/send" method="post" enctype="multipart/form-data">-->
+<!--        <label>Sender Email</label><br>-->
+<!--        <input type="email" name="sender" required><br><br>-->
+
+<!--        <label>Receiver Emails (comma separated, max 20)</label><br>-->
+<!--        <input type="text" name="receivers" required><br><br>-->
+
+<!--        <label>Subject</label><br>-->
+<!--        <input type="text" name="subject" required><br><br>-->
+
+<!--        <label>Message</label><br>-->
+<!--        <textarea name="message" rows="5" required></textarea><br><br>-->
+
+<!--        <label>Attachment</label><br>-->
+<!--        <input type="file" name="file"><br><br>-->
+
+<!--        <label>Schedule (seconds, 0 = send now)</label><br>-->
+<!--        <input type="number" name="schedule" value="0"><br><br>-->
+
+<!--        <button type="submit">Send</button>-->
+<!--        <button type="button" onclick="window.location='/'">Exit</button>-->
+<!--    </form>-->
+<!--</body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<link rel="icon" type="image/jpg" href="/data.jpg">
+    <!-- Viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Send Mail</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: #ffffff;
+            width: 100%;
+            max-width: 520px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #203a43;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            margin-top: 6px;
+            margin-bottom: 16px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #203a43;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .send-btn {
+            background: #203a43;
+            color: #ffffff;
+        }
+
+        .send-btn:hover {
+            background: #162d35;
+        }
+
+        .exit-btn {
+            background: #777;
+            color: #ffffff;
+        }
+
+        .exit-btn:hover {
+            background: #555;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Send Email</h2>
+
+        <form action="/send" method="post" enctype="multipart/form-data">
+
+            <label>Sender Email</label>
+            <input type="email" name="sender" required>
+
+            <label>Receiver Emails (comma separated, max 20)</label>
+            <input type="text" name="receivers" required>
+
+            <label>Subject</label>
+            <input type="text" name="subject" required>
+
+            <label>Message</label>
+            <textarea name="message" rows="5" required></textarea>
+
+            <label>Attachment</label>
+            <input type="file" name="file">
+
+            <label>Schedule (seconds, 0 = send now)</label>
+            <input type="number" name="schedule" value="0" min="0">
+
+            <div class="btn-group">
+                <button type="submit" class="send-btn">Send</button>
+                <button type="button" class="exit-btn" onclick="window.location='/'">Exit</button>
+            </div>
+
+        </form>
+    </div>
+
+</body>
+</html>

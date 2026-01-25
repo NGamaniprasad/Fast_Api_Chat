@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/jpg" href="/data.jpg">
+
+
+    <!-- Mobile viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Email sender - Prasad</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background: linear-gradient(135deg, #1d2671, #c33764); /* better colors */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Center content */
+        .main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: #ffffff;
+            width: 100%;
+            max-width: 380px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #1d2671;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            font-size: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #1d2671;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #1d2671;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #16205f;
+        }
+
+        /* Footer at bottom of page */
+        footer {
+            background: #2c2c2c; /* light black */
+            color: #cccccc;
+            text-align: center;
+            padding: 12px 0;
+            font-size: 14px;
+        }
+
+        footer hr {
+            border: none;
+            border-top: 1px solid #444;
+            margin: 6px auto;
+            width: 90%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="main">
+        <div class="container">
+            <h2>Email sender - Prasad</h2>
+
+            <form action="/login" method="post">
+                <input type="password" name="password" placeholder="Enter Password" required>
+                <button type="submit">Try It Out</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <hr>
+        <p>© 2026 All rights reserved | Gamani Prasad |</p>
+    </footer>
+
+</body>
+</html>
