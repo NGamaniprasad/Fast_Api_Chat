@@ -53,36 +53,3 @@ async def send_email(sender, receivers, subject, message, file):
 #     └── pyvenv.cfg
 # """
 
-
-# import smtplib
-# from email.message import EmailMessage
-# import os
-
-# SMTP_SERVER = "smtp.gmail.com"
-# SMTP_PORT = 587
-
-# EMAIL = os.getenv("EMAIL")  # your Gmail address
-# PASSWORD = os.getenv("EMAIL_PASSWORD")  # Gmail App Password
-
-# def send_email(sender, receivers, subject, message, file):
-#     msg = EmailMessage()
-#     msg["From"] = EMAIL
-#     msg["Reply-To"] = sender
-#     msg["To"] = ", ".join(receivers)
-#     msg["Subject"] = subject
-#     msg.set_content(message)
-
-#     if file:
-#         data = file.file.read()
-#         msg.add_attachment(
-#             data,
-#             maintype="application",
-#             subtype="octet-stream",
-#             filename=file.filename,
-#         )
-
-#     with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-#         server.starttls()
-#         server.login(EMAIL, PASSWORD)
-#         server.send_message(msg)
-
