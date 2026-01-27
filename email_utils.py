@@ -5,9 +5,8 @@ import os
 
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
-
-EMAIL = os.getenv("EMAIL")
-PASSWORD = os.getenv("EMAIL_PASSWORD")
+EMAIL = "grownbyaigp@gmail.com"
+PASSWORD = "agblkeblhtorwrnv"
 
 async def send_email(sender, receivers, subject, message, file):
     if not EMAIL or not PASSWORD:
