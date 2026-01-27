@@ -1,45 +1,38 @@
 
+import smtplib
+from email.message import EmailMessage
+import os
 
+SMTP_SERVER = "smtp.gmail.com"
+SMTP_PORT = 587
 
-# import smtplib
-# from email.message import EmailMessage
+EMAIL = os.getenv("EMAIL")
+PASSWORD = os.getenv("EMAIL_PASSWORD")
 
-# SMTP_SERVER = "smtp.gmail.com"
-# SMTP_PORT = 587
+async def send_email(sender, receivers, subject, message, file):
+    if not EMAIL or not PASSWORD:
+        raise Exception("EMAIL or EMAIL_PASSWORD not set in environment")
 
-# # CHANGE THESE
-# # EMAIL = "grownbyaigp@gmail.com"
-# # PASSWORD = "agblkeblhtorwrnv"
+    msg = EmailMessage()
+    msg["From"] = EMAIL
+    msg["Reply-To"] = sender
+    msg["To"] = ", ".join(receivers)
+    msg["Subject"] = subject
+    msg.set_content(message)
 
-# import os
+    if file:
+        data = await file.read()   # 🔥 REQUIRED FOR CLOUD
+        msg.add_attachment(
+            data,
+            maintype="application",
+            subtype="octet-stream",
+            filename=file.filename,
+        )
 
-# EMAIL = os.getenv("EMAIL")
-# PASSWORD = os.getenv("EMAIL_PASSWORD")
-
-
-# async def send_email(sender, receivers, subject, message, file):
-#     msg = EmailMessage()
-#    # msg["From"] = sender
-#     msg["From"] = EMAIL
-#     msg["Reply-To"] = sender
-
-#     msg["To"] = ", ".join(receivers)
-#     msg["Subject"] = subject
-#     msg.set_content(message)
-
-#     if file:
-#         data = await file.read()
-#         msg.add_attachment(
-#             data,
-#             maintype="application",
-#             subtype="octet-stream",
-#             filename=file.filename,
-#         )
-
-#     with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-#         server.starttls()
-#         server.login(EMAIL, PASSWORD)
-#         server.send_message(msg)
+    with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+        server.starttls()
+        server.login(EMAIL, PASSWORD)
+        server.send_message(msg)
 # """
 # DS/
 # │
