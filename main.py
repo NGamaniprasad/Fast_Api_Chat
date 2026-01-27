@@ -150,8 +150,8 @@ import os
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
-#PASSWORD = "Gamani123-CBM"  # login password
-LOGIN_PASSWORD=Gamani123-CBM
+PASSWORD = "Gamani123-CBM"  # login password
+#LOGIN_PASSWORD=Gamani123-CBM
 
 
 @app.get("/", response_class=HTMLResponse)
