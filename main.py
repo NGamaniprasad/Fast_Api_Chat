@@ -1,8 +1,4 @@
-
-
-
-
-from fastapi import FastAPI, Request, Form, UploadFile, File, BackgroundTasks
+from fastapi import FastAPI, Request, Form, UploadFile, File # BackgroundTasks
 from fastapi.responses import HTMLResponse, RedirectResponse
 #from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -23,11 +19,6 @@ def home(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
 
 
-# @app.post("/login")
-# def login(password: str = Form(...)):
-#     if password == PASSWORD:
-#         return RedirectResponse(url="/chat", status_code=302)
-#     return {"error": "Wrong password"}
 
 
 @app.post("/login", response_class=HTMLResponse)
@@ -46,9 +37,15 @@ def login(request: Request, password: str = Form(...)):
 def chat(request: Request):
     return templates.TemplateResponse("chat.html", {"request": request})
 
-#
-# @app.post("/send")
+
+#WOrking
+# async def delayed_send(delay, *args):
+#     time.sleep(delay)
+#     await send_email(*args)
+
+# @app.post("/send", response_class=HTMLResponse)
 # async def send_mail(
+#     request: Request,
 #     background_tasks: BackgroundTasks,
 #     sender: str = Form(...),
 #     receivers: str = Form(...),
@@ -57,48 +54,54 @@ def chat(request: Request):
 #     schedule: int = Form(0),
 #     file: UploadFile = File(None),
 # ):
-#     receiver_list = [r.strip() for r in receivers.split(",") if r.strip()]
-#
-#     if len(receiver_list) > 25:
-#         return {"error": "Maximum 25 recipients allowed at one time"}
-#
-#     if schedule > 0:
+#     receiver_list = [r.strip() for r in receivers.split(",") if r.strip()][:25]
+
+#     try:
 #         background_tasks.add_task(
 #             delayed_send,
-#             schedule,
+#             max(schedule, 0),
 #             sender,
 #             receiver_list,
 #             subject,
 #             message,
 #             file,
 #         )
-#     else:
-#         await send_email(sender, receiver_list, subject, message, file)
-#
-#     return {"status": f"Mail sent to {len(receiver_list)} recipients"}
 
+#         return templates.TemplateResponse(
+#             "response.html",
+#             {
+#                 "request": request,
+#                 "title": "✅ Success",
+#                 "message": "Mail sent successfully to recipients.",
+#                 "color": "green",
+#             },
+#         )
 
-async def delayed_send(delay, *args):
-    time.sleep(delay)
-    await send_email(*args)
+#     except Exception as e:
+#         return templates.TemplateResponse(
+#             "response.html",
+#             {
+#                 "request": request,
+#                 "title": "❌ Failed",
+#                 "message": "Mail sending failed. Please try again.",
+#                 "color": "red",
+#             },
+#         )
+
 
 @app.post("/send", response_class=HTMLResponse)
 async def send_mail(
     request: Request,
-    background_tasks: BackgroundTasks,
     sender: str = Form(...),
     receivers: str = Form(...),
     subject: str = Form(...),
     message: str = Form(...),
-    schedule: int = Form(0),
     file: UploadFile = File(None),
 ):
     receiver_list = [r.strip() for r in receivers.split(",") if r.strip()][:25]
 
     try:
-        background_tasks.add_task(
-            delayed_send,
-            max(schedule, 0),
+        await send_email(
             sender,
             receiver_list,
             subject,
@@ -111,18 +114,19 @@ async def send_mail(
             {
                 "request": request,
                 "title": "✅ Success",
-                "message": "Mail sent successfully to recipients.",
+                "message": "Mail sent successfully.",
                 "color": "green",
             },
         )
 
     except Exception as e:
+        print("EMAIL ERROR:", e)
         return templates.TemplateResponse(
             "response.html",
             {
                 "request": request,
                 "title": "❌ Failed",
-                "message": "Mail sending failed. Please try again.",
+                "message": "Mail sending failed.",
                 "color": "red",
             },
         )
