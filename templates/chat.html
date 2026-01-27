@@ -1,173 +1,235 @@
-<!--<!DOCTYPE html>-->
-<!--<html>-->
-<!--<head>-->
-<!--    <title>Send Mail</title>-->
-<!--</head>-->
-<!--<body>-->
-<!--    <h2>Send Email</h2>-->
-
-<!--    <form action="/send" method="post" enctype="multipart/form-data">-->
-<!--        <label>Sender Email</label><br>-->
-<!--        <input type="email" name="sender" required><br><br>-->
-
-<!--        <label>Receiver Emails (comma separated, max 20)</label><br>-->
-<!--        <input type="text" name="receivers" required><br><br>-->
-
-<!--        <label>Subject</label><br>-->
-<!--        <input type="text" name="subject" required><br><br>-->
-
-<!--        <label>Message</label><br>-->
-<!--        <textarea name="message" rows="5" required></textarea><br><br>-->
-
-<!--        <label>Attachment</label><br>-->
-<!--        <input type="file" name="file"><br><br>-->
-
-<!--        <label>Schedule (seconds, 0 = send now)</label><br>-->
-<!--        <input type="number" name="schedule" value="0"><br><br>-->
-
-<!--        <button type="submit">Send</button>-->
-<!--        <button type="button" onclick="window.location='/'">Exit</button>-->
-<!--    </form>-->
-<!--</body>-->
-<!--</html>-->
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-<link rel="icon" type="image/jpg" href="/data.jpg">
-    <!-- Viewport -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Email Sender</title>
 
-    <title>Send Mail</title>
+<style>
+:root {
+    --bg: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+    --card: #ffffff;
+    --text: #1f2933;
+    --muted: #6b7280;
+    --primary: #4f46e5;
+    --secondary: #22d3ee;
+    --border: #e5e7eb;
+}
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+body.dark {
+    --bg: linear-gradient(135deg, #020617, #0f172a);
+    --card: rgba(255,255,255,0.08);
+    --text: #f9fafb;
+    --muted: #9ca3af;
+    --primary: #22d3ee;
+    --secondary: #38bdf8;
+    --border: rgba(255,255,255,0.15);
+}
 
-        body {
-            margin: 0;
-            font-family: "Segoe UI", Tahoma, sans-serif;
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
+* { box-sizing: border-box; }
 
-        .container {
-            background: #ffffff;
-            width: 100%;
-            max-width: 520px;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-        }
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text);
+    transition: 0.4s;
+}
 
-        h2 {
-            text-align: center;
-            margin-bottom: 25px;
-            color: #203a43;
-        }
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--card);
+    padding: 10px 18px;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
 
-        label {
-            font-weight: 600;
-            font-size: 14px;
-            color: #333;
-        }
+.container {
+    width: 100%;
+    max-width: 700px;
+    background: var(--card);
+    backdrop-filter: blur(20px);
+    border-radius: 22px;
+    padding: 35px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+    border: 1px solid var(--border);
+}
 
-        input,
-        textarea {
-            width: 100%;
-            padding: 10px 12px;
-            margin-top: 6px;
-            margin-bottom: 16px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            font-size: 14px;
-        }
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
 
-        input:focus,
-        textarea:focus {
-            outline: none;
-            border-color: #203a43;
-        }
+.header h2 {
+    color: var(--primary);
+}
 
-        textarea {
-            resize: vertical;
-        }
+.field {
+    position: relative;
+    margin-bottom: 22px;
+}
 
-        .btn-group {
-            display: flex;
-            gap: 12px;
-            margin-top: 10px;
-        }
+.field input,
+.field textarea {
+    width: 100%;
+    padding: 14px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    font-size: 15px;
+}
 
-        button {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 15px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+.field textarea { resize: vertical; }
 
-        .send-btn {
-            background: #203a43;
-            color: #ffffff;
-        }
+.field label {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 14px;
+    transition: 0.3s;
+    pointer-events: none;
+    background: var(--card);
+    padding: 0 6px;
+}
 
-        .send-btn:hover {
-            background: #162d35;
-        }
+.field input:focus + label,
+.field textarea:focus + label,
+.field input:not(:placeholder-shown) + label,
+.field textarea:not(:placeholder-shown) + label {
+    top: -8px;
+    font-size: 12px;
+    color: var(--primary);
+}
 
-        .exit-btn {
-            background: #777;
-            color: #ffffff;
-        }
+.file-preview {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: -10px;
+    margin-bottom: 15px;
+}
 
-        .exit-btn:hover {
-            background: #555;
-        }
-    </style>
+.counter {
+    text-align: right;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: -10px;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+}
+
+.toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--card);
+    padding: 14px 22px;
+    border-radius: 12px;
+    display: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+</style>
 </head>
 
 <body>
 
-    <div class="container">
-        <h2>Send Email</h2>
+<div class="theme-toggle" onclick="toggleTheme()">🌙</div>
 
-        <form action="/send" method="post" enctype="multipart/form-data">
-
-            <label>Sender Email</label>
-            <input type="email" name="sender" required>
-
-            <label>Receiver Emails (comma separated, max 20)</label>
-            <input type="text" name="receivers" required>
-
-            <label>Subject</label>
-            <input type="text" name="subject" required>
-
-            <label>Message</label>
-            <textarea name="message" rows="5" required></textarea>
-
-            <label>Attachment</label>
-            <input type="file" name="file">
-
-            <label>Schedule (seconds, 0 = send now)</label>
-            <input type="number" name="schedule" value="0" min="0">
-
-            <div class="btn-group">
-                <button type="submit" class="send-btn">Send</button>
-                <button type="button" class="exit-btn" onclick="window.location='/'">Exit</button>
-            </div>
-
-        </form>
+<div class="container">
+    <div class="header">
+        <h2>📧 Email Sender</h2>
+        <button style="width:auto;padding:8px 14px;" onclick="window.location='/'">Logout</button>
     </div>
+
+    <form action="/send" method="post" enctype="multipart/form-data" onsubmit="sendAnim()">
+
+        <div class="field">
+            <input type="email" name="sender" required placeholder=" ">
+            <label>Sender Email</label>
+        </div>
+
+        <div class="field">
+            <input type="text" name="receivers" required placeholder=" ">
+            <label>Receiver Emails (comma separated)</label>
+        </div>
+
+        <div class="field">
+            <input type="text" name="subject" required placeholder=" ">
+            <label>Subject</label>
+        </div>
+
+        <div class="field">
+            <textarea name="message" rows="5" maxlength="1000" required placeholder=" " oninput="countChars(this)"></textarea>
+            <label>Message</label>
+            <div class="counter" id="counter">0 / 1000</div>
+        </div>
+
+        <div class="field">
+            <input type="file" name="file" onchange="showFile(this)">
+            <label>Attachment</label>
+            <div class="file-preview" id="filePreview"></div>
+        </div>
+
+        <button type="submit">🚀 Send Email</button>
+    </form>
+</div>
+
+<div class="toast" id="toast">Sending...</div>
+
+<script>
+function toggleTheme() {
+    document.body.classList.toggle("dark");
+    const icon = document.querySelector(".theme-toggle");
+    icon.textContent = document.body.classList.contains("dark") ? "☀️" : "🌙";
+    localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+}
+
+if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark");
+    document.querySelector(".theme-toggle").textContent = "☀️";
+}
+
+function showFile(input) {
+    const preview = document.getElementById("filePreview");
+    preview.textContent = input.files.length ? "📎 " + input.files[0].name : "";
+}
+
+function countChars(el) {
+    document.getElementById("counter").textContent = el.value.length + " / 1000";
+}
+
+function sendAnim() {
+    const toast = document.getElementById("toast");
+    toast.style.display = "block";
+    toast.textContent = "Sending email...";
+}
+</script>
 
 </body>
 </html>
