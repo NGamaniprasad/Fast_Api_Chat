@@ -1,30 +1,61 @@
-
-
 from fastapi import FastAPI, Request, Form, UploadFile, File
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from starlette.middleware.sessions import SessionMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 from email_utils import send_email
 import os
 
 app = FastAPI()
+
+# Session
+app.add_middleware(SessionMiddleware, secret_key="SUPER_SECRET_KEY_123")
+
+# ---------- AUTH MIDDLEWARE ----------
+class AuthMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        protected = ["/chat", "/send"]
+
+        if any(request.url.path.startswith(p) for p in protected):
+            if not request.session.get("user"):
+                return RedirectResponse("/", status_code=303)
+
+        return await call_next(request)
+
+app.add_middleware(AuthMiddleware)
+
 templates = Jinja2Templates(directory="templates")
+LOGIN_PASSWORD = os.getenv("LOGIN_PASSWORD", "Gamani123-CBM")
 
-LOGIN_PASSWORD = "Gamani123-CBM"  # better to move this to env later
 
+# ---------- HOME ----------
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
 
+
+# ---------- LOGIN ----------
 @app.post("/login", response_class=HTMLResponse)
 def login(request: Request, password: str = Form(...)):
-    if password == LOGIN_PASSWORD:
-        return RedirectResponse(url="/chat", status_code=302)
-    return templates.TemplateResponse("data.html", {"request": request})
+    request.session.clear()
 
+    if password == LOGIN_PASSWORD:
+        request.session["user"] = "logged"
+        return RedirectResponse("/chat", status_code=303)
+
+    return templates.TemplateResponse(
+        "home.html",
+        {"request": request, "error": "❌ Invalid password!"}
+    )
+
+
+# ---------- CHAT ----------
 @app.get("/chat", response_class=HTMLResponse)
 def chat(request: Request):
     return templates.TemplateResponse("chat.html", {"request": request})
 
+
+# ---------- SEND MAIL ----------
 @app.post("/send", response_class=HTMLResponse)
 async def send_mail(
     request: Request,
@@ -38,7 +69,6 @@ async def send_mail(
 
     try:
         await send_email(sender, receiver_list, subject, message, file)
-
         return templates.TemplateResponse(
             "response.html",
             {
@@ -48,9 +78,7 @@ async def send_mail(
                 "color": "green",
             },
         )
-
     except Exception as e:
-        print("EMAIL ERROR:", e)
         return templates.TemplateResponse(
             "response.html",
             {
@@ -61,6 +89,15 @@ async def send_mail(
             },
         )
 
+
+# ---------- LOGOUT ----------
+@app.get("/logout")
+def logout(request: Request):
+    request.session.clear()
+    return RedirectResponse("/", status_code=303)
+
+
+# ---------- RUN ----------
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))
+    uvicorn.run("main:app", host="0.0.0.0", port=8000)
