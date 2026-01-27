@@ -1,219 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <link rel="icon" type="image/jpg" href="/data.jpg">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Email Sender - Prasad</title>
 
-    <title>Email sender - Prasad</title>
+<style>
+:root {
+    --bg: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+    --card: #ffffff;
+    --text: #1f2933;
+    --muted: #6b7280;
+    --primary: #4f46e5;
+    --secondary: #22d3ee;
+    --footer: #f0f0f0;
+    --border: #e5e7eb;
+}
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+body.dark {
+    --bg: linear-gradient(135deg, #020617, #0f172a);
+    --card: rgba(255,255,255,0.08);
+    --text: #f9fafb;
+    --muted: #9ca3af;
+    --primary: #22d3ee;
+    --secondary: #38bdf8;
+    --footer: #020617;
+    --border: rgba(255,255,255,0.15);
+}
 
-        body {
-            margin: 0;
-            font-family: "Segoe UI", Tahoma, sans-serif;
-            background: linear-gradient(135deg, #1d2671, #c33764);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+* { box-sizing: border-box; }
 
-        .main {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: 0.4s;
+}
 
-        .container {
-            background: #ffffff;
-            width: 100%;
-            max-width: 380px;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
-            text-align: center;
-        }
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--card);
+    padding: 10px 18px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 18px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
 
-        h2 {
-            margin-bottom: 20px;
-            color: #1d2671;
-        }
+.main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-        input {
-            width: 100%;
-            padding: 12px;
-            font-size: 15px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            margin-bottom: 20px;
-        }
+.container {
+    background: var(--card);
+    backdrop-filter: blur(20px);
+    width: 100%;
+    max-width: 420px;
+    padding: 40px;
+    border-radius: 22px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.35);
+    text-align: center;
+    border: 1px solid var(--border);
+}
 
-        input:focus {
-            outline: none;
-            border-color: #1d2671;
-        }
+.logo { font-size: 40px; }
 
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #1d2671;
-            color: #ffffff;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+h2 { color: var(--primary); }
 
-        button:hover {
-            background: #16205f;
-        }
+.subtitle {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 30px;
+}
 
-        footer {
-            background: #2c2c2c;
-            color: #cccccc;
-            text-align: center;
-            padding: 12px 0;
-            font-size: 14px;
-        }
+.error-box {
+    color: #ff4d4d;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
 
-        footer hr {
-            border: none;
-            border-top: 1px solid #444;
-            margin: 6px auto;
-            width: 90%;
-        }
+.field {
+    position: relative;
+    margin-bottom: 25px;
+}
 
-        /* ================= COOKIE BANNER ================= */
+.field input {
+    width: 100%;
+    padding: 14px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    font-size: 15px;
+}
 
-        #cookie-banner {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: #2c2c2c;
-            color: #ffffff;
-            padding: 15px 20px;
-            display: none;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            z-index: 9999;
-        }
+.field label {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 14px;
+    transition: 0.3s;
+    pointer-events: none;
+    background: var(--card);
+    padding: 0 6px;
+}
 
-        #cookie-banner p {
-            margin: 0;
-            font-size: 14px;
-            flex: 1;
-        }
+.field input:focus + label,
+.field input:not(:placeholder-shown) + label {
+    top: -8px;
+    font-size: 12px;
+    color: var(--primary);
+}
 
-        .cookie-buttons {
-            display: flex;
-            gap: 10px;
-        }
+.password-box { position: relative; }
 
-        .cookie-buttons button {
-            padding: 8px 14px;
-            border-radius: 5px;
-            border: none;
-            font-size: 14px;
-            cursor: pointer;
-            width: auto;
-        }
+.toggle-password {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
 
-        /* GREEN ACCEPT */
-        .cookie-buttons .accept {
-            background: #28a745;
-            color: #ffffff;
-        }
+button {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
 
-        .cookie-buttons .accept:hover {
-            background: #218838;
-        }
-
-        /* RED REJECT */
-        .cookie-buttons .reject {
-            background: #dc3545;
-            color: #ffffff;
-        }
-
-        .cookie-buttons .reject:hover {
-            background: #c82333;
-        }
-    </style>
+footer {
+    background: var(--footer);
+    text-align: center;
+    padding: 12px;
+    font-size: 13px;
+}
+</style>
 </head>
 
 <body>
 
-    <div class="main">
-        <div class="container">
-            <h2>Email sender - Prasad</h2>
+<div class="theme-toggle" onclick="toggleTheme()">🌙</div>
 
-            <form action="/login" method="post">
-                <input type="password" name="password" placeholder="Enter Password" required>
-                <button type="submit">Try It Out</button>
-            </form>
+<div class="main">
+<div class="container">
+    <div class="logo">📧</div>
+    <h2>Building my empire</h2>
+    <div class="subtitle">Secure Login Portal</div>
+
+    {% if error %}
+    <div class="error-box">{{ error }}</div>
+    {% endif %}
+
+    <form action="/login" method="post">
+        <div class="field">
+            <input type="text" name="username" value="Gamani" required placeholder=" ">
+            <label>Username</label>
         </div>
-    </div>
 
-    <footer>
-        <hr>
-        <p>© 2026 All rights reserved | Gamani Prasad |</p>
-    </footer>
-
-    <!-- COOKIE CONSENT -->
-    <div id="cookie-banner">
-        <p>
-            We use cookies to improve your experience.
-            By clicking “Accept All”, you consent to our use of cookies.
-        </p>
-        <div class="cookie-buttons">
-            <button class="accept" onclick="acceptCookies()">Accept All</button>
-            <button class="reject" onclick="rejectCookies()">Reject All</button>
+        <div class="field password-box">
+            <input type="password" id="password" name="password" required placeholder=" ">
+            <label>Password</label>
+            <span class="toggle-password"
+                  onmouseover="showPassword()"
+                  onmouseout="hidePassword()">👁️</span>
         </div>
-    </div>
 
-    <script>
-        function setCookie(name, value, days) {
-            let expires = "";
-            if (days) {
-                const date = new Date();
-                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                expires = "; expires=" + date.toUTCString();
-            }
-            document.cookie = name + "=" + value + expires + "; path=/";
-        }
+        <button type="submit">Login</button>
+    </form>
+</div>
+</div>
 
-        function getCookie(name) {
-            const nameEQ = name + "=";
-            const ca = document.cookie.split(';');
-            for (let i = 0; i < ca.length; i++) {
-                let c = ca[i].trim();
-                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length);
-            }
-            return null;
-        }
+<footer>© 2026 All Rights Reserved | Gamani Prasad |</footer>
 
-        function acceptCookies() {
-            setCookie("cookieConsent", "accepted", 365);
-            document.getElementById("cookie-banner").style.display = "none";
-        }
+<script>
+function showPassword() {
+    document.getElementById("password").type = "text";
+}
 
-        function rejectCookies() {
-            setCookie("cookieConsent", "rejected", 365);
-            document.getElementById("cookie-banner").style.display = "none";
-        }
+function hidePassword() {
+    document.getElementById("password").type = "password";
+}
 
-        window.onload = function () {
-            if (!getCookie("cookieConsent")) {
-                document.getElementById("cookie-banner").style.display = "flex";
-            }
-        };
-    </script>
+function toggleTheme() {
+    document.body.classList.toggle("dark");
+    const icon = document.querySelector(".theme-toggle");
+    icon.textContent = document.body.classList.contains("dark") ? "☀️" : "🌙";
+    localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+}
+
+if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark");
+    document.querySelector(".theme-toggle").textContent = "☀️";
+}
+</script>
 
 </body>
 </html>
