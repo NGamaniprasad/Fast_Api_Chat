@@ -38,7 +38,6 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    transition: 0.4s;
 }
 
 .theme-toggle {
@@ -50,7 +49,6 @@ body {
     border-radius: 30px;
     cursor: pointer;
     font-size: 18px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
 .main {
@@ -62,12 +60,10 @@ body {
 
 .container {
     background: var(--card);
-    backdrop-filter: blur(20px);
     width: 100%;
     max-width: 420px;
     padding: 40px;
     border-radius: 22px;
-    box-shadow: 0 30px 60px rgba(0,0,0,0.35);
     text-align: center;
     border: 1px solid var(--border);
 }
@@ -79,13 +75,20 @@ h2 { color: var(--primary); }
 .subtitle {
     font-size: 14px;
     color: var(--muted);
-    margin-bottom: 30px;
+    margin-bottom: 10px;
 }
 
 .error-box {
-    color: #ff4d4d;
-    margin-bottom: 15px;
+    color: #ef4444;
     font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.fixed-user {
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: var(--primary);
+    font-size: 16px;
 }
 
 .field {
@@ -100,7 +103,6 @@ h2 { color: var(--primary); }
     border: 1px solid var(--border);
     background: transparent;
     color: var(--text);
-    font-size: 15px;
 }
 
 .field label {
@@ -109,9 +111,7 @@ h2 { color: var(--primary); }
     top: 50%;
     transform: translateY(-50%);
     color: var(--muted);
-    font-size: 14px;
     transition: 0.3s;
-    pointer-events: none;
     background: var(--card);
     padding: 0 6px;
 }
@@ -141,7 +141,6 @@ button {
     border: none;
     border-radius: 10px;
     font-size: 16px;
-    cursor: pointer;
 }
 
 footer {
@@ -149,6 +148,59 @@ footer {
     text-align: center;
     padding: 12px;
     font-size: 13px;
+}
+
+/* COOKIE BAR */
+.cookie-footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: var(--card);
+    border-top: 1px solid var(--border);
+    padding: 14px 22px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    z-index: 9999;
+    animation: slideUp 0.5s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+.cookie-left {
+    font-size: 14px;
+    color: var(--text);
+}
+
+.cookie-link {
+    color: var(--primary);
+    margin-left: 8px;
+    text-decoration: underline;
+}
+
+.cookie-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-accept {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+}
+
+.btn-reject {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 20px;
 }
 </style>
 </head>
@@ -163,22 +215,19 @@ footer {
     <h2>Building my empire</h2>
     <div class="subtitle">Secure Login Portal</div>
 
+    <div class="fixed-user">Gamani Prasad - Business Developer </div>
+
     {% if error %}
     <div class="error-box">{{ error }}</div>
     {% endif %}
 
     <form action="/login" method="post">
-        <div class="field">
-            <input type="text" name="username" value="Gamani" required placeholder=" ">
-            <label>Username</label>
-        </div>
-
         <div class="field password-box">
             <input type="password" id="password" name="password" required placeholder=" ">
             <label>Password</label>
             <span class="toggle-password"
-                  onmouseover="showPassword()"
-                  onmouseout="hidePassword()">👁️</span>
+                onmouseover="showPassword()"
+                onmouseout="hidePassword()">👁️</span>
         </div>
 
         <button type="submit">Login</button>
@@ -186,27 +235,55 @@ footer {
 </div>
 </div>
 
-<footer>© 2026 All Rights Reserved | Gamani Prasad |</footer>
+<footer>© 2026 All Rights Reserved | Gamani Prasad</footer>
+
+<!-- COOKIE BAR -->
+<div class="cookie-footer" id="cookieFooter">
+  <div class="cookie-left">
+    🍪 We use cookies to personalize content and analyze traffic.
+    <span class="cookie-link">Learn more</span>
+  </div>
+  <div class="cookie-buttons">
+    <button class="btn-reject" onclick="rejectCookies()">Reject</button>
+    <button class="btn-accept" onclick="acceptCookies()">Accept</button>
+  </div>
+</div>
 
 <script>
 function showPassword() {
     document.getElementById("password").type = "text";
 }
-
 function hidePassword() {
     document.getElementById("password").type = "password";
 }
 
 function toggleTheme() {
     document.body.classList.toggle("dark");
-    const icon = document.querySelector(".theme-toggle");
-    icon.textContent = document.body.classList.contains("dark") ? "☀️" : "🌙";
-    localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+    localStorage.setItem("theme",
+        document.body.classList.contains("dark") ? "dark" : "light");
 }
 
 if (localStorage.getItem("theme") === "dark") {
     document.body.classList.add("dark");
-    document.querySelector(".theme-toggle").textContent = "☀️";
+}
+
+function acceptCookies() {
+    document.cookie = "consent=accepted; max-age=31536000; path=/";
+    hideCookie();
+}
+function rejectCookies() {
+    document.cookie = "consent=rejected; max-age=31536000; path=/";
+    hideCookie();
+}
+function hideCookie() {
+    document.getElementById("cookieFooter").style.display = "none";
+}
+function getCookie(name) {
+    return document.cookie.split('; ')
+        .find(row => row.startsWith(name + "="));
+}
+if (!getCookie("consent")) {
+    document.getElementById("cookieFooter").style.display = "flex";
 }
 </script>
 
