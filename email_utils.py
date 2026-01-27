@@ -7,7 +7,8 @@ SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 EMAIL = "grownbyaigp@gmail.com"
 PASSWORD = "agblkeblhtorwrnv"
-
+# EMAIL = os.getenv("EMAIL")  # your Gmail address
+# PASSWORD = os.getenv("EMAIL_PASSWORD")  # Gmail App Password
 async def send_email(sender, receivers, subject, message, file):
     if not EMAIL or not PASSWORD:
         raise Exception("EMAIL or EMAIL_PASSWORD not set in environment")
@@ -53,35 +54,35 @@ async def send_email(sender, receivers, subject, message, file):
 # """
 
 
-import smtplib
-from email.message import EmailMessage
-import os
+# import smtplib
+# from email.message import EmailMessage
+# import os
 
-SMTP_SERVER = "smtp.gmail.com"
-SMTP_PORT = 587
+# SMTP_SERVER = "smtp.gmail.com"
+# SMTP_PORT = 587
 
-EMAIL = os.getenv("EMAIL")  # your Gmail address
-PASSWORD = os.getenv("EMAIL_PASSWORD")  # Gmail App Password
+# EMAIL = os.getenv("EMAIL")  # your Gmail address
+# PASSWORD = os.getenv("EMAIL_PASSWORD")  # Gmail App Password
 
-def send_email(sender, receivers, subject, message, file):
-    msg = EmailMessage()
-    msg["From"] = EMAIL
-    msg["Reply-To"] = sender
-    msg["To"] = ", ".join(receivers)
-    msg["Subject"] = subject
-    msg.set_content(message)
+# def send_email(sender, receivers, subject, message, file):
+#     msg = EmailMessage()
+#     msg["From"] = EMAIL
+#     msg["Reply-To"] = sender
+#     msg["To"] = ", ".join(receivers)
+#     msg["Subject"] = subject
+#     msg.set_content(message)
 
-    if file:
-        data = file.file.read()
-        msg.add_attachment(
-            data,
-            maintype="application",
-            subtype="octet-stream",
-            filename=file.filename,
-        )
+#     if file:
+#         data = file.file.read()
+#         msg.add_attachment(
+#             data,
+#             maintype="application",
+#             subtype="octet-stream",
+#             filename=file.filename,
+#         )
 
-    with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-        server.starttls()
-        server.login(EMAIL, PASSWORD)
-        server.send_message(msg)
+#     with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+#         server.starttls()
+#         server.login(EMAIL, PASSWORD)
+#         server.send_message(msg)
 
