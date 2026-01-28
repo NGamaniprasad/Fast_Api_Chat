@@ -5,10 +5,9 @@ import os
 
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
-EMAIL = "grownbyaigp@gmail.com"
-PASSWORD = "agblkeblhtorwrnv"
-# EMAIL = os.getenv("EMAIL")  # your Gmail address
-# PASSWORD = os.getenv("EMAIL_PASSWORD")  # Gmail App Password
+
+EMAIL = os.getenv("EMAIL")  # your Gmail address
+PASSWORD = os.getenv("EMAIL_PASSWORD")  # Gmail App Password
 async def send_email(sender, receivers, subject, message, file):
     if not EMAIL or not PASSWORD:
         raise Exception("EMAIL or EMAIL_PASSWORD not set in environment")
