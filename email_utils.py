@@ -1,54 +1,26 @@
-
 import smtplib
 from email.message import EmailMessage
 import os
 
-SMTP_SERVER = "smtp.gmail.com"
-SMTP_PORT = 587
+EMAIL_USER = os.getenv("EMAIL_USER")
+EMAIL_PASS = os.getenv("EMAIL_PASS")
 
-EMAIL = os.getenv("EMAIL")  # your Gmail address
-PASSWORD = os.getenv("EMAIL_PASSWORD")  # Gmail App Password
 async def send_email(sender, receivers, subject, message, file):
-    if not EMAIL or not PASSWORD:
-        raise Exception("EMAIL or EMAIL_PASSWORD not set in environment")
-
     msg = EmailMessage()
-    msg["From"] = EMAIL
-    msg["Reply-To"] = sender
+    msg["From"] = sender
     msg["To"] = ", ".join(receivers)
     msg["Subject"] = subject
     msg.set_content(message)
 
     if file:
-        data = await file.read()   # 🔥 REQUIRED FOR CLOUD
+        content = await file.read()
         msg.add_attachment(
-            data,
+            content,
             maintype="application",
             subtype="octet-stream",
-            filename=file.filename,
+            filename=file.filename
         )
 
-    with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-        server.starttls()
-        server.login(EMAIL, PASSWORD)
-        server.send_message(msg)
-# """
-# DS/
-# │
-# ├── main.py
-# ├── email_utils.py
-# ├── requirements.txt
-# ├── render.yaml          (only if deploying)
-# │
-# ├── templates/
-# │   ├── home.html        (login / try it out page)
-# │   ├── chat.html        (send mail page)
-# │   ├── response.html    (success / failed message)
-# │   └── data.html        (wrong password page)
-# │
-# └── dot/                 (Python virtual environment)
-#     ├── Scripts/
-#     ├── Lib/
-#     └── pyvenv.cfg
-# """
-
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+        smtp.login(EMAIL_USER, EMAIL_PASS)
+        smtp.send_message(msg)
